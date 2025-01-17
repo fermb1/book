@@ -6,13 +6,18 @@ function App() {
   const [pages, setPages] = useState([]); // Lista de páginas desde la base de datos
   const [loading, setLoading] = useState(true); // Indicador de carga
   const [selectedPage, setSelectedPage] = useState(null); // Página seleccionada para edición
-  const [editedText, setEditedText] = useState(""); // Texto editable
+  const [editedText, setEditedText] = useState(""); 
+  const [title, setTitle] = useState(""); // Para crear nueva página
+  const [newText, setNewText] = useState(""); // Para crear nueva página
+  const [category, setCategory] = useState(""); // Para crear nueva página
+  const [message, setMessage] = useState(""); // Mensajes de estado
+  const [viewMode, setViewMode] = useState("select"); // Modo de vista: "select" o "create"
 
-  // Fetch inicial para obtener las páginas
+  // Obtener las páginas desde el backend
   useEffect(() => {
     const fetchPages = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/pages/all'); // Asegúrate de que esta ruta esté correcta en tu backend
+        const response = await axios.get('http://localhost:5000/api/pages/all');
         setPages(response.data);
         setLoading(false);
       } catch (error) {
@@ -23,31 +28,80 @@ function App() {
     fetchPages();
   }, []);
 
-  // Seleccionar una página
-  const handleSelectPage = (page) => {
-    setSelectedPage(page); // Establece la página seleccionada
-    setEditedText(page.text); // Establece el texto editable con el texto actual
+  // Crear nueva página
+  const handleCreatePage = async (e) => {
+    e.preventDefault();
+
+    if (!title || !newText || !category) {
+      setMessage("Todos los campos son obligatorios.");
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/pages/create', {
+        title,
+        text: newText,
+        category,
+      });
+
+      setMessage("Página creada con éxito: " + response.data.page.title);
+      setPages([...pages, response.data.page]); // Añadir la nueva página a la lista
+      setTitle("");
+      setNewText("");
+      setCategory("");
+    } catch (error) {
+      console.error('Error al crear la página:', error.response?.data || error.message);
+      setMessage("Error al crear la página.");
+    }
   };
 
-  // Guardar los cambios en el backend
+  // Seleccionar una página para editar
+  const handleSelectPage = (page) => {
+    setSelectedPage(page); 
+    setEditedText(page.text); 
+  };
+  const handleDelete = async () => {
+    if (!selectedPage) {
+      alert('Ninguna página seleccionada para eliminar');
+      return;
+    }
+  
+    try {
+      // Hacer la solicitud DELETE al backend
+      const response = await axios.delete(`http://localhost:5000/api/pages/delete/${selectedPage._id}`);
+      
+      alert('Página eliminada correctamente');
+      console.log(response.data);
+  
+      // Actualizar la lista de páginas eliminando la seleccionada
+      const updatedPages = pages.filter((page) => page._id !== selectedPage._id);
+      setPages(updatedPages);
+      setSelectedPage(null); // Limpiar la selección
+    } catch (error) {
+      console.error('Error al eliminar la página:', error.response?.data || error.message);
+      alert('Hubo un problema al eliminar la página.');
+    }
+  };
+  
+  // Guardar cambios en la página seleccionada
   const handleSave = async () => {
     if (!selectedPage) {
       alert("Selecciona una página antes de confirmar.");
       return;
     }
-  
+
     try {
-      // Enviar solicitud PUT para actualizar la página con el nuevo texto
       const response = await axios.put(`http://localhost:5000/api/pages/${selectedPage._id}`, {
-        text: editedText, // El texto editado
+        text: editedText, 
       });
+
       alert("Texto actualizado correctamente");
       console.log(response.data);
-      // Actualizar la lista de páginas con los cambios
+     
       const updatedPages = pages.map((page) =>
         page._id === selectedPage._id ? { ...page, text: editedText } : page
       );
-      setPages(updatedPages); // Actualizamos la lista local de páginas
+      setPages(updatedPages); 
     } catch (error) {
       console.error("Error al guardar los cambios:", error.response?.data || error.message);
       alert("Hubo un problema al guardar los cambios.");
@@ -59,37 +113,81 @@ function App() {
   return (
     <div>
       <header className="navbar">
-        <button onClick={handleSave} disabled={!selectedPage}>
+      <button onClick={handleDelete} disabled={!selectedPage || viewMode !== "select"}>eliminar pagina</button>
+        <button onClick={() => setViewMode("select")}>
+          Seleccionar Página
+        </button>
+        <button onClick={() => setViewMode("create")}>
+          Crear Página
+        </button>
+        <button onClick={handleSave} disabled={!selectedPage || viewMode !== "select"}>
           Confirmar
         </button>
       </header>
+
       <div className="layout">
         <aside className="aside-list">
-          <h1>Lista de páginas</h1>
+          <h1>Lista de Páginas</h1>
           <ul>
             {pages.map((page) => (
               <li key={page._id}>
                 <button onClick={() => handleSelectPage(page)}>
                   {page.title}
                 </button>
-                <small>Categoría: {page.category}</small>
               </li>
             ))}
           </ul>
         </aside>
+
         <section className="hero">
-          {selectedPage ? (
-            <>
-              <h2>Editando: {selectedPage.title}</h2>
-              <textarea
-                rows={10}
-                cols={80}
-                value={editedText}
-                onChange={(e) => setEditedText(e.target.value)}
-              />
-            </>
+          {viewMode === "select" ? (
+            selectedPage ? (
+              <>
+                <h2>Editando: {selectedPage.title}</h2>
+                <textarea
+                  rows={10}
+                  cols={80}
+                  value={editedText}
+                  onChange={(e) => setEditedText(e.target.value)}
+                />
+              </>
+            ) : (
+              <p>Selecciona una página de la lista para editarla.</p>
+            )
           ) : (
-            <p>Selecciona una página de la lista para editarla.</p>
+            <>
+              <h2>Crear Nueva Página</h2>
+              <form onSubmit={handleCreatePage}>
+                <div>
+                  <label>Título:</label>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label>Texto:</label>
+                  <textarea
+                    rows={5}
+                    cols={50}
+                    value={newText}
+                    onChange={(e) => setNewText(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label>Categoría:</label>
+                  <input
+                    type="text"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                  />
+                </div>
+                <button type="submit">Crear Página</button>
+              
+              </form>
+              {message && <p>{message}</p>}
+            </>
           )}
         </section>
       </div>

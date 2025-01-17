@@ -6,6 +6,16 @@
 }
 body{
   background-color:var(--hero-color) ;
+  margin: 0px;
+}
+button{
+  height: 30px;
+  width: 150px;
+  color:black;
+  border-radius: 15px;
+  border: none;
+  background-color: #EEEEEE;
+  margin: 20px 0px 20px 0px;
 }
 .navbar{
   float: right;
@@ -18,8 +28,6 @@ body{
 }
 
 .aside-list {
-  border: 1px solid;
-  border-radius: 10px ;
   margin: 0;
   background-color: var(--aside-color);
   padding: 16px; /* Espaciado interno */

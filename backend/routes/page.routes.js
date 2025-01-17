@@ -1,6 +1,7 @@
 import express from "express";
 import createPage from "../controllers/createpage.controller.js"; // Ajusta la ruta al archivo
 import getPages from "../controllers/getpages.controller.js";
+import { deletePage } from "../controllers/deletePage.controller.js";
 const router = express.Router();
 
 // Ruta para crear una nueva página
@@ -23,5 +24,6 @@ router.post('/update', async (req, res) => {
       res.status(500).json({ error: 'Error al actualizar la página.' });
     }
   });
+  router.delete('/delete/:id', deletePage)
 
 export default router;
