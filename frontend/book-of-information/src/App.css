@@ -1,0 +1,39 @@
+:root {
+  --hero-color: #ede0d4;
+  --aside-color: white;
+  --second-color: #d9d9d9;
+  --found-color: #f0f0f0;
+}
+body{
+  background-color:var(--hero-color) ;
+}
+.navbar{
+  float: right;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 3fr; /* 1 parte para aside, 3 partes para hero */
+  gap: 16px; /* Espaciado entre columnas */
+  height: 100vh; /* Altura completa de la pantalla */
+}
+
+.aside-list {
+  border: 1px solid;
+  border-radius: 10px ;
+  margin: 0;
+  background-color: var(--aside-color);
+  padding: 16px; /* Espaciado interno */
+  overflow-y: auto; /* Permite desplazamiento */
+}
+
+.hero {
+  background-color: var(--hero-color);
+  padding: 16px; /* Espaciado interno */
+  overflow-y: auto; /* Permite desplazamiento */
+}
+
+.hero-p {
+  justify-content: center;
+  width: 100%; /* Ajusta al tamaño disponible */
+  height: auto; /* Altura flexible */
+}

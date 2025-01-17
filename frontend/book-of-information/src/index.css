@@ -1,0 +1,9 @@
+:root{
+  --hero-color:#EDE0D4;
+  --aside-color:white;
+  --second-color:#D9D9d9;
+  --found-color:#F0F0F0;
+  }
+body{
+  background-color: black;
+}
