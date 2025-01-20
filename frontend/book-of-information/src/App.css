@@ -24,6 +24,11 @@ button{
   background-color: var(--button-color);
   margin: 20px 0px 20px 0px;
 }
+button:hover{
+  transition: all 0.2s;
+  background-color: #FFFFFF;
+  color: black;
+}
 .ri-book-open-fill{
   display: flex; /* Activamos flexbox */
   align-items: center; /* Centra verticalmente */
@@ -64,7 +69,22 @@ button{
   margin-left: 60px;
   margin-right: 30px;
 }
-
+.ri-book-open-fill{
+  color: white;
+}
+.hero-content{
+  justify-content: center;
+  display: grid;
+    grid-template-columns: 1fr;
+}
+.h2-hero{
+  display: flex;
+  justify-content: center;  
+}
+.hero-texarea{
+  height: 500px;
+  width: 1500px;
+}
 .aside-list {
   grid-row: 1 / span 2; /* Toma ambas filas (toda la altura) */
   grid-column: 1; /* Primer columna */
@@ -73,7 +93,9 @@ button{
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   border: 1px solid black;
 }
+.aside-list-titles{
 
+}
 .hero {
   display: grid;
     grid-template-columns: 1fr 4fr; /* Aside ocupa 1/4, el resto 4/4 */

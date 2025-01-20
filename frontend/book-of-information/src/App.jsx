@@ -131,7 +131,7 @@ function App() {
           <ul>
             {pages.map((page) => (
               <li key={page._id}>
-                <button onClick={() => handleSelectPage(page)}>
+                <button className="aside-list-titles" onClick={() => handleSelectPage(page)}>
                   {page.title}
                 </button>
               </li>
@@ -142,14 +142,17 @@ function App() {
         <section className="hero">
           {viewMode === "select" ? (
             selectedPage ? (
-              <>
-                <h2>Editando: {selectedPage.title}</h2>
-                <textarea
+              <><div className="hero-content">
+                <h2 className="h2-hero">{selectedPage.title}</h2>
+                <textarea 
+                  className="hero-texarea"
                   rows={10}
                   cols={80}
                   value={editedText}
                   onChange={(e) => setEditedText(e.target.value)}
+                  
                 />
+                </div>
               </>
             ) : (
               <p>Selecciona una página de la lista para editarla.</p>
