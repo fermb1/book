@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import './App.css';
 import axios from 'axios';
 
+
 function App() {
   const [pages, setPages] = useState([]); // Lista de páginas desde la base de datos
   const [loading, setLoading] = useState(true); // Indicador de carga
@@ -111,23 +112,22 @@ function App() {
   if (loading) return <p>Cargando páginas...</p>;
 
   return (
-    <div>
-      <header className="navbar">
-      <button onClick={handleDelete} disabled={!selectedPage || viewMode !== "select"}>eliminar pagina</button>
+    <div className="container">
+      <header className="header-class">
+      <button className='header-button' onClick={handleDelete} disabled={!selectedPage || viewMode !== "select"}><i class="ri-delete-bin-6-line"></i>eliminar pagina</button>
         <button onClick={() => setViewMode("select")}>
-          Seleccionar Página
+        <i class="ri-arrow-up-line"></i>  Seleccionar Página
         </button>
-        <button onClick={() => setViewMode("create")}>
-          Crear Página
+        <button className='header-button' onClick={() => setViewMode("create")}>
+        <i class="ri-add-circle-fill"></i> Crear Página
         </button>
-        <button onClick={handleSave} disabled={!selectedPage || viewMode !== "select"}>
-          Confirmar
+        <button className='header-button' onClick={handleSave} disabled={!selectedPage || viewMode !== "select"}>
+        <i class="ri-check-line"></i>  Confirmar
         </button>
       </header>
 
-      <div className="layout">
         <aside className="aside-list">
-          <h1>Lista de Páginas</h1>
+          <h4 className="h1-list"><i class="ri-book-open-fill"></i> Lista de Páginas</h4>
           <ul>
             {pages.map((page) => (
               <li key={page._id}>
@@ -157,27 +157,31 @@ function App() {
           ) : (
             <>
               <h2>Crear Nueva Página</h2>
-              <form onSubmit={handleCreatePage}>
-                <div>
-                  <label>Título:</label>
+              <form className="container-hero" onSubmit={handleCreatePage}>
+                <div className="section-1">
+                  <label>Título</label><br />
                   <input
+                    className='input-style'
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
                 </div>
-                <div>
-                  <label>Texto:</label>
+                <div className="section-3">
+                  <label>Texto </label><br />
                   <textarea
+                    className='input-style'
                     rows={5}
                     cols={50}
                     value={newText}
                     onChange={(e) => setNewText(e.target.value)}
                   />
                 </div>
-                <div>
-                  <label>Categoría:</label>
+                <div className="section-2">
+                  <label>Categoría</label><br />
                   <input
+                    className='input-style'
+
                     type="text"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
@@ -191,7 +195,6 @@ function App() {
           )}
         </section>
       </div>
-    </div>
   );
 }
 
